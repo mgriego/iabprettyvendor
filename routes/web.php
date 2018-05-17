@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use GuzzleHttp\Client as GuzzleHttpClient;
 
 
@@ -93,5 +94,9 @@ Route::get('/', function (Request $request) {
         }
     });
     
-    return view('vendorlist', ['vendorlist' => $vendorList]);
+    return view('vendorlist', [
+        'vendorlist' => $vendorList,
+        'version' => $rawVendorList['vendorListVersion'],
+        'lastupdated' => (new Carbon($rawVendorList['lastUpdated']))->toRfc7231String(),
+    ]);
 });

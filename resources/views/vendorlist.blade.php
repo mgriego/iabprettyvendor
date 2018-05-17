@@ -9,7 +9,11 @@
     </head>
     <body>
         <h1>IAB Vendor List</h1>
-        <h3>Total Vendor Count: {{ count($vendorlist) }}</h3>
+        <ul>
+            <li>Vendor List Version: {{ $version }}</li>
+            <li>Last Updated: {{ $lastupdated }}</li>
+            <li>Total Vendor Count: {{ count($vendorlist) }}</li>
+        </ul>
         <table style="width: 100%;">
             <tr>
                 <th>Vendor ID</th>
