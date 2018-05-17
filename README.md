@@ -1,0 +1,2 @@
+# IAB Global Vendor List
+Display a table-ified version of the IAB Global Vendor List.  Clone the repository on a machine that can run Laravel, run `php artisan serve`, and visit http://localhost:8000.  By default, the table is sorted by the vendor ID.  The table can be sorted by vendor name by adding `sort=name` to the query parameters.  The sort can be reversed by adding `rev=1` to the query parameters.
