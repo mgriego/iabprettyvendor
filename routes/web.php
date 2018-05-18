@@ -21,12 +21,22 @@ Route::get('/', function (Request $request) {
     $response = $client->get('https://vendorlist.consensu.org/vendorlist.json');
     $rawVendorList = json_decode($response->getBody()->getContents(), true);
     $vendorList = [];
-    
+
+    $purposeList = [];
+    foreach ($rawVendorList['purposes'] as $purpose) {
+        $purposeList[$purpose['id']] = $purpose['name'];
+    }
+
+    $featureList = [];
+    foreach ($rawVendorList['features'] as $feature) {
+        $featureList[$feature['id']] = $feature['name'];
+    }
+
     foreach ($rawVendorList['vendors'] as $id => $vendor) {
         $purposes = [];
         foreach ($vendor['purposeIds'] as $purpose) {
-            if (isset($rawVendorList['purposes'][$purpose])) {
-                $purposes[] = e($rawVendorList['purposes'][$purpose]['name']);
+            if (isset($purposeList[$purpose])) {
+                $purposes[] = e($purposeList[$purpose]);
             } else {
                 $purposes[] = e('Unknown Purpose');
             }
@@ -34,11 +44,11 @@ Route::get('/', function (Request $request) {
         if (count($purposes) === 0) {
             $purposes[] = 'None';
         }
-        
+
         $legitimateInterestPurposes = [];
         foreach ($vendor['legIntPurposeIds'] as $purpose) {
-            if (isset($rawVendorList['purposes'][$purpose])) {
-                $legitimateInterestPurposes[] = e($rawVendorList['purposes'][$purpose]['name']);
+            if (isset($purposeList[$purpose])) {
+                $legitimateInterestPurposes[] = e($purposeList[$purpose]);
             } else {
                 $legitimateInterestPurposes[] = e('Unknown Purpose');
             }
@@ -46,11 +56,11 @@ Route::get('/', function (Request $request) {
         if (count($legitimateInterestPurposes) === 0) {
             $legitimateInterestPurposes[] = 'None';
         }
-        
+
         $features = [];
         foreach ($vendor['featureIds'] as $feature) {
-            if (isset($rawVendorList['features'][$feature])) {
-                $features[] = e($rawVendorList['features'][$feature]['name']);
+            if (isset($featureList[$feature])) {
+                $features[] = e($featureList[$feature]);
             } else {
                 $features[] = e('Unknown Feature');
             }
@@ -79,7 +89,7 @@ Route::get('/', function (Request $request) {
     usort($vendorList, function($a, $b) use ($sort, $rev) {
         $a = $a[$sort];
         $b = $b[$sort];
-        
+
         if ($sort === 'name') {
             $a = strtolower($a);
             $b = strtolower($b);
@@ -93,7 +103,7 @@ Route::get('/', function (Request $request) {
             return ($a < $b) ? -1 : 1;
         }
     });
-    
+
     return view('vendorlist', [
         'vendorlist' => $vendorList,
         'version' => $rawVendorList['vendorListVersion'],
